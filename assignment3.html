@@ -1,0 +1,167 @@
+<html>
+
+<head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body {
+      background-color:cadetblue;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+    }
+
+
+    #p1, #p2 {
+      max-width: 700px;
+    }
+
+    p {
+      font-family: monospace;
+      font-size: 18px;
+      max-width: 650px;
+      text-align: justify;
+    }
+
+    h1 {
+      font-family: monospace;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>Time and Location of Shooting Incidents in Boston Area</h1>
+  
+  <div class="container">
+
+    <div class="panel">
+      <div id="p1"></div>
+      <p>
+        The majority of shooting incidents happened at night with a peak of 183 
+        incidents happening at 12am. From here on the number of shootings each
+        hour decreases until 8am where they remain relatively low until they begin
+        increasing in the afternoon and evening.
+      </p>
+    </div>
+
+    <div class="panel">
+      <div id="p2"></div>
+      <p>
+        The streets with the most shooting incidents were Washington St. with 67, 
+        Blue Hill Ave. with 47, and Centre St. with 38. Click on a bar to show 
+        specific times of incidents. Refresh the page to view times of incidents
+        for all streets combined.
+      </p>
+    </div>
+    
+  </div>
+
+  <script>
+
+    var hoursOfDay = ['12am', '1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm', '11pm']
+
+    var countPerHour = [183, 141, 110, 85, 57, 45, 32, 25, 12, 23, 21, 30, 31, 18, 31, 44, 44, 66, 66, 86, 123, 146, 149, 153]
+
+    var streetNames = ['WASHINGTON ST', 'BLUE HILL AVE', 'CENTRE ST', 'COLUMBIA RD', 'DORCHESTER AVE', 'DUDLEY ST', 'WALNUT AVE', 'GENEVA AVE', 'TALBOT AVE', 'BOWDOIN ST']
+
+    var streetCounts = [67, 47, 38, 25, 23, 21, 18, 17, 15, 15]
+
+    var streetByHour = {
+      'WASHINGTON ST': [7, 7, 4, 1, 1, 2, 1, 1, 1, 0, 0, 2, 3, 1, 2, 2, 1, 1, 2, 8, 4, 7, 6, 3], 
+      'BLUE HILL AVE': [7, 2, 3, 5, 1, 5, 4, 2, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 2, 4, 1, 2, 1, 1], 
+      'CENTRE ST': [2, 5, 4, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 2, 2, 0, 3, 1, 2, 1, 5, 5], 
+      'COLUMBIA RD': [3, 2, 2, 1, 2, 2, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 2, 1, 0, 1, 2, 1, 2], 
+      'DORCHESTER AVE': [0, 5, 1, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 2, 1, 4, 3, 0], 
+      'DUDLEY ST': [0, 0, 2, 0, 1, 2, 0, 0, 2, 1, 0, 0, 1, 0, 0, 0, 2, 2, 2, 0, 2, 1, 2, 1], 
+      'WALNUT AVE': [3, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 3, 0, 2, 1], 
+      'GENEVA AVE': [1, 4, 2, 2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 1], 
+      'TALBOT AVE': [1, 0, 2, 0, 0, 1, 0, 2, 0, 1, 0, 1, 0, 0, 0, 1, 0, 2, 0, 1, 1, 0, 0, 2], 
+      'BOWDOIN ST': [0, 1, 2, 0, 0, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 3, 1, 2]
+    }
+
+
+
+    var byHour = [{
+      x: hoursOfDay,
+      y: countPerHour,
+      fill: "tozeroy"
+    }]
+
+    var hourLayout = {
+      title: {
+        text: "Shootings by the Hour (All Streets Combined)"
+      },
+      xaxis: {
+        title: {
+          text: "Hour of Day"
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Shooting Count"
+        }
+      }
+    }
+
+    var byStreet = [{
+      x: streetNames,
+      y: streetCounts,
+      type: "bar"
+    }]
+
+    var streetLayout = {
+      title: {
+        text: "Boston Streets With Most Shootings"
+      },
+      xaxis: {
+        title: {
+          text: "Street Name"
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Shooting Count"
+        }
+      }
+    }
+
+    Plotly.newPlot('p1', byHour, hourLayout);
+    Plotly.newPlot('p2', byStreet, streetLayout)
+
+    var plot1 = document.getElementById('p1')
+    var plot2 = document.getElementById('p2')
+    plot2.on('plotly_click', function(data) {
+      var streetHourData = [{
+        x: hoursOfDay,
+        y: streetByHour[data.points[0].label],
+        fill: "tozeroy"
+      }]
+
+    var hourLayout = {
+      title: {
+        text: "Shootings on " + data.points[0].label + " by the Hour"
+      },
+      xaxis: {
+        title: {
+          text: "Hour of Day"
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Shooting Count"
+        }
+      }
+    }
+
+      Plotly.react('p1', streetHourData, hourLayout)
+    }) 
+
+  </script>
+</body>
+<html>
